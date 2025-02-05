@@ -1,21 +1,21 @@
 package com.manna.fobe.user.entity;
 
+import com.manna.fobe.common.entity.CommonEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "`user`")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userId;
-    private String name;
+
     private String email;
     private String password;
 
@@ -23,9 +23,12 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @PrePersist
+    @Override
     protected void onCreate() {
-        this.role = Role.USER;
+        super.onCreate();
+        if (this.role == null) {
+            this.role = Role.USER;
+        }
     }
 
     public enum Role {
