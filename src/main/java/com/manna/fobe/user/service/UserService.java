@@ -11,4 +11,6 @@ public interface UserService {
     Tokens login(LoginRequestDto userCommonDto);
 
     Tokens refresh(String refreshToken);
+
+    User getMyProfile(int userId);
 }

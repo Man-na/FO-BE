@@ -6,9 +6,7 @@ import com.manna.fobe.user.dto.SignupRequestDto;
 import com.manna.fobe.user.dto.Tokens;
 import com.manna.fobe.user.entity.User;
 import com.manna.fobe.user.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +17,9 @@ public class UserController {
 
     private final UserService userService;
 
-
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<ResponseMessage> createUser(@RequestBody SignupRequestDto signupRequestDto) throws BadRequestException {
+    public ResponseEntity<ResponseMessage> createUser(@RequestBody SignupRequestDto signupRequestDto) {
         User createdUser = userService.signup(signupRequestDto);
 
         ResponseMessage response = ResponseMessage.builder()
@@ -34,10 +31,10 @@ public class UserController {
         return ResponseEntity.status(201).body(response);
     }
 
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<ResponseMessage> login(
-            @RequestBody LoginRequestDto loginRequestDto,
-            HttpServletResponse response
+            @RequestBody LoginRequestDto loginRequestDto
     ) {
         Tokens tokens = userService.login(loginRequestDto);
 
@@ -50,6 +47,7 @@ public class UserController {
         return ResponseEntity.ok(responseMessage);
     }
 
+    // refreshToken
     @GetMapping("/refresh")
     public ResponseEntity<ResponseMessage> refreshToken(
             @RequestHeader("Authorization") String refreshToken
@@ -65,6 +63,7 @@ public class UserController {
         return ResponseEntity.ok(responseMessage);
     }
 
+    // 로그아웃
     @PostMapping("/logout")
     public ResponseEntity<ResponseMessage> logout() {
         ResponseMessage responseMessage = ResponseMessage.builder()
@@ -75,4 +74,19 @@ public class UserController {
         return ResponseEntity.ok(responseMessage);
     }
 
+    // 프로필 조회
+    @GetMapping("/me")
+    public ResponseEntity<ResponseMessage> getMyProfile(
+            @RequestAttribute("userId") int userId
+    ) {
+        User user = userService.getMyProfile(userId);
+
+        ResponseMessage response = ResponseMessage.builder()
+                .data(user)
+                .statusCode(200)
+                .resultMessage("User profile retrieved")
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
 }

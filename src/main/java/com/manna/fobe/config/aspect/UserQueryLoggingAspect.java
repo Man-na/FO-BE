@@ -29,7 +29,8 @@ public class UserQueryLoggingAspect {
     private final ObjectMapper objectMapper;
 
     @Pointcut("within(com.manna.fobe.user.controller..*)")
-    public void targetController() { }
+    public void targetController() {
+    }
 
     @Around("targetController()")
     public Object aroundUserController(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -58,13 +59,26 @@ public class UserQueryLoggingAspect {
     }
 
     private Map<String, Object> objectToMap(Object source) {
-        if (source instanceof String) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("value", source);
-            return map;
+        Map<String, Object> result = new HashMap<>();
+
+        if (source == null) {
+            return result;
         }
 
-        return objectMapper.convertValue(source, new TypeReference<>() {});
+        if (source instanceof String || source instanceof Number || source instanceof Boolean) {
+            result.put("value", source);
+            return result;
+        }
+
+        try {
+            result = objectMapper.convertValue(source, new TypeReference<>() {
+            });
+        } catch (IllegalArgumentException e) {
+            log.warn("Cannot convert source to Map. Fallback to string representation. Source: {}, error: {}",
+                    source, e.getMessage());
+            result.put("value", source.toString());
+        }
+        return result;
     }
 
 

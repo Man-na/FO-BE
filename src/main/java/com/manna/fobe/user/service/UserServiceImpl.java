@@ -129,4 +129,12 @@ public class UserServiceImpl implements UserService {
             throw new BizRuntimeException("회원 저장 중 예기치 않은 오류가 발생했습니다.", e);
         }
     }
+
+    /**
+     * userId로 DB에서 유저 조회
+     */
+    public User getMyProfile(int userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new BizRuntimeException("해당 유저를 찾을 수 없습니다. userId=" + userId));
+    }
 }
