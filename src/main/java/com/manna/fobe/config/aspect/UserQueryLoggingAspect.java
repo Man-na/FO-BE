@@ -58,8 +58,15 @@ public class UserQueryLoggingAspect {
     }
 
     private Map<String, Object> objectToMap(Object source) {
+        if (source instanceof String) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("value", source);
+            return map;
+        }
+
         return objectMapper.convertValue(source, new TypeReference<>() {});
     }
+
 
     private Map<String, Object> setDefaultQueryInfo(Map<String, Object> userQuery,
                                                     Map<String, Object> result,

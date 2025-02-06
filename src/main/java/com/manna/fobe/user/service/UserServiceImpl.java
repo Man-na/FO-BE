@@ -3,6 +3,7 @@ package com.manna.fobe.user.service;
 import com.manna.fobe.common.exception.BizRuntimeException;
 import com.manna.fobe.user.dto.LoginRequestDto;
 import com.manna.fobe.user.dto.SignupRequestDto;
+import com.manna.fobe.user.dto.Tokens;
 import com.manna.fobe.user.entity.User;
 import com.manna.fobe.user.repository.UserRepository;
 import com.manna.fobe.user.utils.JwtUtil;
@@ -53,18 +54,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(LoginRequestDto loginRequestDto) {
+    public Tokens login(LoginRequestDto loginRequestDto) {
         try {
             Optional<User> user = userRepository.findByEmail(loginRequestDto.getEmail());
             if (user.isEmpty()) {
                 throw new BizRuntimeException("존재하지 않는 유저입니다.");
             }
 
-            if (passwordEncoder.matches(loginRequestDto.getPassword(), user.get().getPassword())) {
-                return jwtUtil.createToken(user.get().getUserId(), user.get().getRole().toString());
-            } else {
+            // 패스워드 매칭
+            if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.get().getPassword())) {
                 throw new BizRuntimeException("잘못된 비밀번호입니다.");
             }
+
+            // AccessToken, RefreshToken 생성
+            String accessToken = jwtUtil.createToken(user.get().getUserId(), user.get().getRole().toString());
+            String refreshToken = jwtUtil.createRefreshToken(user.get().getUserId(), user.get().getRole().toString());
+
+            // Tokens DTO 로 묶어서 반환
+            return new Tokens(accessToken, refreshToken);
+
         } catch (DataAccessException e) {
             log.error("로그인 처리 중 데이터베이스 오류 발생", e);
             throw new BizRuntimeException("로그인 처리 중 데이터베이스 오류가 발생했습니다.", e);
@@ -76,6 +84,34 @@ public class UserServiceImpl implements UserService {
             throw new BizRuntimeException("로그인 처리 중 예기치 않은 오류가 발생했습니다.", e);
         }
     }
+
+    @Override
+    public Tokens refresh(String refreshToken) {
+        try {
+            // refreshToken 유효성 검증
+            if (!jwtUtil.validateToken(refreshToken)) {
+                throw new BizRuntimeException("유효하지 않은 리프레시 토큰입니다.");
+            }
+
+            // 토큰에서 userId, role 파싱
+            int userId = jwtUtil.getUserIdFromToken(refreshToken);
+            String role = jwtUtil.getRoleFromToken(refreshToken);
+
+            // 새 AccessToken 발급
+            String newAccessToken = jwtUtil.createToken(userId, role);
+            String newRefreshToken = jwtUtil.createRefreshToken(userId, role);
+
+            return new Tokens(newAccessToken, newRefreshToken);
+
+        } catch (BizRuntimeException e) {
+            log.error("토큰 재발급 중 비즈니스 로직 오류 발생", e);
+            throw e;
+        } catch (Exception e) {
+            log.error("토큰 재발급 중 예기치 않은 오류 발생", e);
+            throw new BizRuntimeException("토큰 재발급 중 예기치 않은 오류가 발생했습니다.", e);
+        }
+    }
+
 
     private boolean isPasswordValid(String password) {
         String passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*?_])[A-Za-z\\d!@#$%^&*?_]{8,16}$";
