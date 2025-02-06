@@ -1,6 +1,7 @@
 package com.manna.fobe.config.aspect;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manna.fobe.common.utils.CommonUtils;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 public class UserQueryLoggingAspect {
-    private final CommonUtils utils;
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final CommonUtils utils;
+    private final ObjectMapper objectMapper;
 
     @Pointcut("within(com.manna.fobe.user.controller..*)")
     public void targetController() { }
@@ -44,28 +45,29 @@ public class UserQueryLoggingAspect {
         long elapsedTime = System.currentTimeMillis() - startTime;
 
         if (Objects.nonNull(methodResult)) {
-            Map<String, Object> req = (joinPoint.getArgs().length > 0) ? objectToMap(joinPoint.getArgs()[0]) : new HashMap<>();
+            Map<String, Object> req = (joinPoint.getArgs().length > 0)
+                    ? objectToMap(joinPoint.getArgs()[0])
+                    : new HashMap<>();
+
             Map<String, Object> res = objectToMap(methodResult);
+
             logQuery(req, res, elapsedTime);
         }
 
         return methodResult;
     }
 
-    private String removeListFormat(String listStyleString) {
-        return listStyleString.replaceAll("^\\[|\\]$", "");
-    }
-
     private Map<String, Object> objectToMap(Object source) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.convertValue(source, Map.class);
+        return objectMapper.convertValue(source, new TypeReference<>() {});
     }
 
-    private Map<String, Object> setDefaultQueryInfo(Map<String, Object> userQuery, Map<String, Object> result, long elapsedTime) {
+    private Map<String, Object> setDefaultQueryInfo(Map<String, Object> userQuery,
+                                                    Map<String, Object> result,
+                                                    long elapsedTime) {
         if (result.containsKey("data")) {
             Object data = result.get("data");
             if (data instanceof Map) {
-                Map<String, Object> dataMap = (Map<String, Object>) data;
+                Map<?, ?> dataMap = (Map<?, ?>) data;
                 if (dataMap.containsKey("totalSize")) {
                     userQuery.put("totalSize", dataMap.get("totalSize"));
                 }
@@ -89,5 +91,9 @@ public class UserQueryLoggingAspect {
         } catch (Exception e) {
             log.error("UserQueryLoggingAspect error: ", e);
         }
+    }
+
+    private String removeListFormat(String listStyleString) {
+        return listStyleString.replaceAll("^\\[|\\]$", "");
     }
 }
