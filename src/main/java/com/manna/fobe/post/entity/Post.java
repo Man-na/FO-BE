@@ -18,7 +18,7 @@ import java.util.List;
 public class Post extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     private String title;
     private String address;
     private Date date;

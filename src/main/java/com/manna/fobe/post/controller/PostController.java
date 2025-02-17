@@ -54,6 +54,20 @@ public class PostController {
         return ResponseEntity.ok(responseMessage);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseMessage> getSinglePost(@PathVariable("id") int id) {
+
+        Post post = postService.getSinglePost(id);
+
+        ResponseMessage responseMessage = ResponseMessage.builder()
+                .data(post)
+                .statusCode(200)
+                .resultMessage("포스트 조회 성공")
+                .build();
+
+        return ResponseEntity.ok(responseMessage);
+    }
+
     // 이미지 업로드
     @PostMapping("/images")
     public ResponseEntity<ResponseMessage> uploadImage(@RequestParam("file") MultipartFile file) throws IOException, IOException {

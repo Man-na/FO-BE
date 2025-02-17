@@ -10,4 +10,6 @@ public interface PostService {
     Post createPost(CreatePostDto createPostDto, int userId);
 
     List<Marker> getMyMarkers(int userId);
+
+    Post getSinglePost(int postId);
 }

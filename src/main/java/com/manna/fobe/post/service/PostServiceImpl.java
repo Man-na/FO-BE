@@ -56,4 +56,9 @@ public class PostServiceImpl implements PostService {
     public List<Marker> getMyMarkers(int userId) {
         return markerRepository.findByUserId(userId);
     }
+
+    @Override
+    public Post getSinglePost(int postId) {
+        return postRepository.findById(postId);
+    }
 }
