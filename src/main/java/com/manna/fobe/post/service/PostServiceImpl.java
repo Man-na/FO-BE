@@ -4,6 +4,7 @@ import com.manna.fobe.post.dto.CreatePostDto;
 import com.manna.fobe.post.entity.Image;
 import com.manna.fobe.post.entity.Marker;
 import com.manna.fobe.post.entity.Post;
+import com.manna.fobe.post.repository.MarkerRepository;
 import com.manna.fobe.post.repository.PostRepository;
 import com.manna.fobe.user.entity.User;
 import com.manna.fobe.user.repository.UserRepository;
@@ -20,11 +21,21 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final MarkerRepository markerRepository;
 
     @Transactional
     @Override
     public Post createPost(CreatePostDto createPostDto, int userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Marker marker = Marker.builder()
+                .latitude(createPostDto.getLatitude())
+                .longitude(createPostDto.getLongitude())
+                .color(createPostDto.getColor())
+                .score(createPostDto.getScore())
+                .user(user)
+                .build();
 
         Post post = Post.builder()
                 .title(createPostDto.getTitle())
@@ -32,14 +43,17 @@ public class PostServiceImpl implements PostService {
                 .date(createPostDto.getDate())
                 .description(createPostDto.getDescription())
                 .user(user)
-                .marker(new Marker(createPostDto.getMarker().getId(), createPostDto.getMarker().getLatitude(), createPostDto.getMarker().getLongitude(), createPostDto.getMarker().getColor(), createPostDto.getMarker().getScore()))
-                .imageUris(createPostDto.getImageUris().stream().map(img -> new Image(img.getId(), img.getUri(), null)).collect(Collectors.toList()))
+                .marker(marker)
+                .imageUris(createPostDto.getImageUris().stream()
+                        .map(img -> new Image(null, img.getUri(), null))
+                        .collect(Collectors.toList()))
                 .build();
+
         return postRepository.save(post);
     }
 
     @Override
-    public List<Post> getMyMarkers(int userId) {
-        return postRepository.findByUserId(userId);
+    public List<Marker> getMyMarkers(int userId) {
+        return markerRepository.findByUserId(userId);
     }
 }

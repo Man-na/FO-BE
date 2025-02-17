@@ -19,6 +19,9 @@ public class CreatePostDto {
     private Date date;
     private String description;
     private int userId;
-    private MarkerDto marker;
+    private double latitude;
+    private double longitude;
+    private int score;
+    private String color;
     private List<ImageDto> imageUris;
 }

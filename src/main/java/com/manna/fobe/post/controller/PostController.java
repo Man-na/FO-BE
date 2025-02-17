@@ -2,6 +2,7 @@ package com.manna.fobe.post.controller;
 
 import com.manna.fobe.common.dto.ResponseMessage;
 import com.manna.fobe.post.dto.CreatePostDto;
+import com.manna.fobe.post.entity.Marker;
 import com.manna.fobe.post.entity.Post;
 import com.manna.fobe.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -42,10 +43,10 @@ public class PostController {
     public ResponseEntity<ResponseMessage> getMyMarkers(
             @RequestAttribute("userId") int userId
     ) {
-        List<Post> posts = postService.getMyMarkers(userId);
+        List<Marker> markers = postService.getMyMarkers(userId);
 
         ResponseMessage responseMessage = ResponseMessage.builder()
-                .data(posts)
+                .data(markers)
                 .statusCode(200)
                 .resultMessage("마커 조회 성공")
                 .build();
