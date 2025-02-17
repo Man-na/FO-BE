@@ -23,15 +23,15 @@ public class Post extends CommonEntity {
     private String address;
     private Date date;
     private String description;
+    private double latitude;
+    private double longitude;
+    private String color;
+    private int score;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "marker_id", referencedColumnName = "id")
-    private Marker marker;
-
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Image> imageUris;
+    private List<Image> images;
 }

@@ -2,9 +2,7 @@ package com.manna.fobe.post.service;
 
 import com.manna.fobe.post.dto.CreatePostDto;
 import com.manna.fobe.post.entity.Image;
-import com.manna.fobe.post.entity.Marker;
 import com.manna.fobe.post.entity.Post;
-import com.manna.fobe.post.repository.MarkerRepository;
 import com.manna.fobe.post.repository.PostRepository;
 import com.manna.fobe.user.entity.User;
 import com.manna.fobe.user.repository.UserRepository;
@@ -21,7 +19,6 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final MarkerRepository markerRepository;
 
     @Transactional
     @Override
@@ -29,22 +26,17 @@ public class PostServiceImpl implements PostService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Marker marker = Marker.builder()
-                .latitude(createPostDto.getLatitude())
-                .longitude(createPostDto.getLongitude())
-                .color(createPostDto.getColor())
-                .score(createPostDto.getScore())
-                .user(user)
-                .build();
-
         Post post = Post.builder()
                 .title(createPostDto.getTitle())
                 .address(createPostDto.getAddress())
                 .date(createPostDto.getDate())
                 .description(createPostDto.getDescription())
                 .user(user)
-                .marker(marker)
-                .imageUris(createPostDto.getImageUris().stream()
+                .latitude(createPostDto.getLatitude())
+                .longitude(createPostDto.getLongitude())
+                .color(createPostDto.getColor())
+                .score(createPostDto.getScore())
+                .images(createPostDto.getImageUris().stream()
                         .map(img -> new Image(null, img.getUri(), null))
                         .collect(Collectors.toList()))
                 .build();
@@ -53,8 +45,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Marker> getMyMarkers(int userId) {
-        return markerRepository.findByUserId(userId);
+    public List<Post> getMyPosts(int userId) {
+        return postRepository.findByUserId(userId);
     }
 
     @Override
