@@ -1,5 +1,6 @@
 package com.manna.fobe.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manna.fobe.common.entity.CommonEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,5 +20,6 @@ public class Image extends CommonEntity {
 
     @ManyToOne
     @JoinColumn(name = "post_id")
+    @JsonBackReference
     private Post post;
 }

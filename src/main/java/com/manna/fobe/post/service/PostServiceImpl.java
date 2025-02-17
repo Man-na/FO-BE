@@ -36,10 +36,14 @@ public class PostServiceImpl implements PostService {
                 .longitude(createPostDto.getLongitude())
                 .color(createPostDto.getColor())
                 .score(createPostDto.getScore())
-                .images(createPostDto.getImageUris().stream()
-                        .map(img -> new Image(null, img.getUri(), null))
-                        .collect(Collectors.toList()))
                 .build();
+
+        if (createPostDto.getImageUris() != null) {
+            List<Image> images = createPostDto.getImageUris().stream()
+                    .map(img -> new Image(null, img.getUri(), post))
+                    .collect(Collectors.toList());
+            post.setImages(images);
+        }
 
         return postRepository.save(post);
     }

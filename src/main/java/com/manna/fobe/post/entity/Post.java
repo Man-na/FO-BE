@@ -1,5 +1,6 @@
 package com.manna.fobe.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.manna.fobe.common.entity.CommonEntity;
 import com.manna.fobe.user.entity.User;
 import jakarta.persistence.*;
@@ -33,5 +34,6 @@ public class Post extends CommonEntity {
     private User user;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Image> images;
 }

@@ -52,6 +52,7 @@ public class PostController {
         return ResponseEntity.ok(responseMessage);
     }
 
+    // 개별 post 조회
     @GetMapping("/{id}")
     public ResponseEntity<ResponseMessage> getSinglePost(@PathVariable("id") int id) {
 
