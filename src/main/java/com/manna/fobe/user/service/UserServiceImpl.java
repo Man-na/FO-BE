@@ -6,7 +6,7 @@ import com.manna.fobe.user.dto.SignupRequestDto;
 import com.manna.fobe.user.dto.Tokens;
 import com.manna.fobe.user.entity.User;
 import com.manna.fobe.user.repository.UserRepository;
-import com.manna.fobe.user.utils.JwtUtil;
+import com.manna.fobe.common.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -67,8 +67,8 @@ public class UserServiceImpl implements UserService {
             }
 
             // AccessToken, RefreshToken 생성
-            String accessToken = jwtUtil.createToken(user.get().getUserId(), user.get().getRole().toString());
-            String refreshToken = jwtUtil.createRefreshToken(user.get().getUserId(), user.get().getRole().toString());
+            String accessToken = jwtUtil.createToken(user.get().getId(), user.get().getRole().toString());
+            String refreshToken = jwtUtil.createRefreshToken(user.get().getId(), user.get().getRole().toString());
 
             // Tokens DTO 로 묶어서 반환
             return new Tokens(accessToken, refreshToken);

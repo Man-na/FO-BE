@@ -1,4 +1,4 @@
-package com.manna.fobe.user.config;
+package com.manna.fobe.config.web;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

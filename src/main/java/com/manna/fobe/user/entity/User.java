@@ -14,7 +14,7 @@ public class User extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private int id;
 
     private String email;
     private String password;

@@ -1,6 +1,6 @@
 package com.manna.fobe.filter;
 
-import com.manna.fobe.user.utils.JwtUtil;
+import com.manna.fobe.common.utils.JwtUtil;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

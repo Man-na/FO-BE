@@ -1,4 +1,4 @@
-package com.manna.fobe.user.utils;
+package com.manna.fobe.common.utils;
 
 import com.manna.fobe.common.exception.BizRuntimeException;
 import io.jsonwebtoken.*;
