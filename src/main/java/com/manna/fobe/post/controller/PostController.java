@@ -6,6 +6,8 @@ import com.manna.fobe.post.entity.Post;
 import com.manna.fobe.post.service.PostService;
 import com.manna.fobe.post.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,7 +43,7 @@ public class PostController {
     public ResponseEntity<ResponseMessage> getMyMarkers(
             @RequestAttribute("userId") int userId
     ) {
-        List<Post> markers = postService.getMyPosts(userId);
+        List<Post> markers = postService.getMyMarkers(userId);
 
         ResponseMessage responseMessage = ResponseMessage.builder()
                 .data(markers)
@@ -51,6 +53,25 @@ public class PostController {
 
         return ResponseEntity.ok(responseMessage);
     }
+
+    // 내 게시글 조회
+    @GetMapping("/posts/my")
+    public ResponseEntity<ResponseMessage> getPosts(
+            @RequestAttribute("userId") int userId,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) {
+        Page<Post> postsPage = postService.getMyPosts(userId, PageRequest.of(page - 1, size));
+
+        ResponseMessage responseMessage = ResponseMessage.builder()
+                .data(postsPage)
+                .statusCode(200)
+                .resultMessage("마커 조회 성공")
+                .build();
+
+        return ResponseEntity.ok(responseMessage);
+    }
+
 
     // 개별 post 조회
     @GetMapping("/{id}")

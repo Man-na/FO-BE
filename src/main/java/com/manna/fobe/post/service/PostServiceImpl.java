@@ -7,6 +7,8 @@ import com.manna.fobe.post.repository.PostRepository;
 import com.manna.fobe.user.entity.User;
 import com.manna.fobe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,12 +51,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getMyPosts(int userId) {
+    public List<Post> getMyMarkers(int userId) {
         return postRepository.findByUserId(userId);
     }
 
     @Override
     public Post getSinglePost(int postId) {
         return postRepository.findById(postId);
+    }
+
+    @Override
+    public Page<Post> getMyPosts(int userId, Pageable pageable) {
+        return postRepository.findByUserId(userId, pageable);
     }
 }
