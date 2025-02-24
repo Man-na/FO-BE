@@ -12,7 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,5 +66,23 @@ public class PostServiceImpl implements PostService {
     @Override
     public Page<Post> getMyPosts(int userId, Pageable pageable) {
         return postRepository.findByUserId(userId, pageable);
+    }
+
+    @Override
+    public Map<Integer, List<Post>> getCalendarPosts(int year, int month, int userId) {
+        // 해당 연월의 시작일과 종료일 계산
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDate startDate = yearMonth.atDay(1);
+        LocalDate endDate = yearMonth.atEndOfMonth();
+
+        // 해당 기간의 포스트 조회
+        List<Post> posts = postRepository.findByUserIdAndDateBetween(userId, startDate, endDate);
+
+        // 날짜별로 그룹화
+        return posts.stream()
+                .collect(Collectors.groupingBy(
+                        post -> post.getDate().getDayOfMonth(),
+                        Collectors.toList()
+                ));
     }
 }

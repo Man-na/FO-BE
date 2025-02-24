@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PostService {
     Post createPost(CreatePostDto createPostDto, int userId);
@@ -15,4 +16,6 @@ public interface PostService {
     Post getSinglePost(int postId);
 
     Page<Post> getMyPosts(int userId, Pageable pageable);
+
+    Map<Integer, List<Post>> getCalendarPosts(int year, int month, int userId);
 }

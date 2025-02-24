@@ -1,11 +1,13 @@
 package com.manna.fobe.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.manna.fobe.common.entity.CommonEntity;
 import com.manna.fobe.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +24,11 @@ public class Post extends CommonEntity {
     private int id;
     private String title;
     private String address;
-    private Date date;
+
+    @Column(name = "date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate date;
+
     private String description;
     private double latitude;
     private double longitude;

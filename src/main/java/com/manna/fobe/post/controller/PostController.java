@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/post")
@@ -83,6 +84,23 @@ public class PostController {
                 .data(post)
                 .statusCode(200)
                 .resultMessage("포스트 조회 성공")
+                .build();
+
+        return ResponseEntity.ok(responseMessage);
+    }
+
+    @GetMapping("/calendar")
+    public ResponseEntity<ResponseMessage> getCalendarPosts(
+            @RequestParam("year") int year,
+            @RequestParam("month") int month,
+            @RequestAttribute("userId") int userId
+    ) {
+        Map<Integer, List<Post>> calendarPosts = postService.getCalendarPosts(year, month, userId);
+
+        ResponseMessage responseMessage = ResponseMessage.builder()
+                .data(calendarPosts)
+                .statusCode(200)
+                .resultMessage("캘린더 포스트 조회 성공")
                 .build();
 
         return ResponseEntity.ok(responseMessage);
