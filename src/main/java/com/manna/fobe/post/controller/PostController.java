@@ -4,7 +4,7 @@ import com.manna.fobe.common.dto.ResponseMessage;
 import com.manna.fobe.post.dto.CreatePostDto;
 import com.manna.fobe.post.entity.Post;
 import com.manna.fobe.post.service.PostService;
-import com.manna.fobe.post.service.S3Service;
+import com.manna.fobe.common.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class PostController {
 
     private final PostService postService;
-    private final S3Service s3Service;
+    private final S3Utils s3Utils;
 
     // post 추가
     @PostMapping("/posts")
@@ -112,7 +112,7 @@ public class PostController {
         List<String> imagePaths = new ArrayList<>();
 
         for (MultipartFile file : files) {
-            imagePaths.add(s3Service.uploadFile(file));
+            imagePaths.add(s3Utils.uploadFile(file));
         }
 
         ResponseMessage responseMessage = ResponseMessage.builder()

@@ -65,7 +65,11 @@ public class UserController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<ResponseMessage> logout() {
+    public ResponseEntity<ResponseMessage> logout(
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        String refreshToken = authHeader != null ? authHeader.replace("Bearer ", "") : null;
+
         ResponseMessage responseMessage = ResponseMessage.builder()
                 .statusCode(200)
                 .resultMessage("Logout successful")
