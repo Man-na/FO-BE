@@ -1,4 +1,4 @@
-package com.manna.fobe.post.entity;
+package com.manna.fobe.marker.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.manna.fobe.common.entity.CommonEntity;
@@ -19,7 +19,7 @@ public class Image extends CommonEntity {
     private String uri;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "marker_id")
     @JsonBackReference
-    private Post post;
+    private Marker marker;
 }

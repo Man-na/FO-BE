@@ -1,4 +1,4 @@
-package com.manna.fobe.post.dto;
+package com.manna.fobe.marker.dto;
 
 import lombok.*;
 

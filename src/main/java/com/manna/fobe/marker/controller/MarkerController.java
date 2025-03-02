@@ -1,9 +1,9 @@
-package com.manna.fobe.post.controller;
+package com.manna.fobe.marker.controller;
 
 import com.manna.fobe.common.dto.ResponseMessage;
-import com.manna.fobe.post.dto.CreatePostDto;
-import com.manna.fobe.post.entity.Post;
-import com.manna.fobe.post.service.PostService;
+import com.manna.fobe.marker.dto.CreateMarkerDto;
+import com.manna.fobe.marker.entity.Marker;
+import com.manna.fobe.marker.service.MarkerService;
 import com.manna.fobe.common.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,33 +18,33 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/post")
+@RequestMapping("/api/v1/marker")
 @RequiredArgsConstructor
-public class PostController {
+public class MarkerController {
 
-    private final PostService postService;
+    private final MarkerService markerService;
     private final S3Utils s3Utils;
 
-    // post 추가
-    @PostMapping("/posts")
-    public ResponseEntity<ResponseMessage> createUser(@RequestBody CreatePostDto createPostDto, @RequestAttribute("userId") int userId) {
-        Post createdPost = postService.createPost(createPostDto, userId);
+    // marker 추가
+    @PostMapping("/")
+    public ResponseEntity<ResponseMessage> createMarker(@RequestBody CreateMarkerDto createMarkerDto, @RequestAttribute("userId") int userId) {
+        Marker createdMarker = markerService.createMarker(createMarkerDto, userId);
 
         ResponseMessage response = ResponseMessage.builder()
-                .data(createdPost)
+                .data(createdMarker)
                 .statusCode(201)
-                .resultMessage("post 추가 성공")
+                .resultMessage("마커 추가 성공")
                 .build();
 
         return ResponseEntity.status(201).body(response);
     }
 
-    // 내 마커 조회
-    @GetMapping("/markers/my")
+    // 마커 전체 조회
+    @GetMapping("/markers/all")
     public ResponseEntity<ResponseMessage> getMyMarkers(
             @RequestAttribute("userId") int userId
     ) {
-        List<Post> markers = postService.getMyMarkers(userId);
+        List<Marker> markers = markerService.getMyMarkers(userId);
 
         ResponseMessage responseMessage = ResponseMessage.builder()
                 .data(markers)
@@ -55,14 +55,14 @@ public class PostController {
         return ResponseEntity.ok(responseMessage);
     }
 
-    // 내 게시글 조회
-    @GetMapping("/posts/my")
-    public ResponseEntity<ResponseMessage> getPosts(
+    // 내 마커 조회
+    @GetMapping("/markers/my")
+    public ResponseEntity<ResponseMessage> getMarkers(
             @RequestAttribute("userId") int userId,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
-        Page<Post> postsPage = postService.getMyPosts(userId, PageRequest.of(page - 1, size));
+        Page<Marker> postsPage = markerService.getMyMarkers(userId, PageRequest.of(page - 1, size));
 
         ResponseMessage responseMessage = ResponseMessage.builder()
                 .data(postsPage)
@@ -74,28 +74,28 @@ public class PostController {
     }
 
 
-    // 개별 post 조회
+    // 개별 마커 조회
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseMessage> getSinglePost(@PathVariable("id") int id) {
+    public ResponseEntity<ResponseMessage> getSingleMarker(@PathVariable("id") int id) {
 
-        Post post = postService.getSinglePost(id);
+        Marker marker = markerService.getSingleMarker(id);
 
         ResponseMessage responseMessage = ResponseMessage.builder()
-                .data(post)
+                .data(marker)
                 .statusCode(200)
-                .resultMessage("포스트 조회 성공")
+                .resultMessage("마커 조회 성공")
                 .build();
 
         return ResponseEntity.ok(responseMessage);
     }
 
     @GetMapping("/calendar")
-    public ResponseEntity<ResponseMessage> getCalendarPosts(
+    public ResponseEntity<ResponseMessage> getCalendarMarkers(
             @RequestParam("year") int year,
             @RequestParam("month") int month,
             @RequestAttribute("userId") int userId
     ) {
-        Map<Integer, List<Post>> calendarPosts = postService.getCalendarPosts(year, month, userId);
+        Map<Integer, List<Marker>> calendarPosts = markerService.getCalendarMarkers(year, month, userId);
 
         ResponseMessage responseMessage = ResponseMessage.builder()
                 .data(calendarPosts)

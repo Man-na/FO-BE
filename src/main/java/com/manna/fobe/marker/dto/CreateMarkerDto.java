@@ -1,4 +1,4 @@
-package com.manna.fobe.post.dto;
+package com.manna.fobe.marker.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,14 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatePostDto {
+public class CreateMarkerDto {
     private Long id;
     private String title;
     private String address;
