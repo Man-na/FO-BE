@@ -1,6 +1,7 @@
 package com.manna.fobe.common.utils;
 
 import com.manna.fobe.config.s3.S3Properties;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,11 +20,16 @@ import java.util.UUID;
 public class S3Utils {
 
     private final S3Client s3Client;
+    @Getter
     private final S3Properties s3Properties;
 
     public String uploadFile(MultipartFile file) throws IOException {
+        return uploadFile(file, "assets/images");
+    }
+
+    public String uploadFile(MultipartFile file, String prefix) throws IOException {
         String filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-        String key = "assets/images/" + filename;
+        String key = prefix + "/" + filename;
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(s3Properties.getBucketName())
@@ -61,4 +67,5 @@ public class S3Utils {
 
         return avatarUrls.toArray(new String[0]);
     }
+
 }

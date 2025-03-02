@@ -23,11 +23,26 @@ public class User extends CommonEntity {
     @Column(nullable = false)
     private Role role;
 
+    private String nickname;
+
+    private String imageUri;
+
+    private String hatId;
+    private String handId;
+    private String skinId;
+    private String topId;
+    private String faceId;
+    private String bottomId;
+    private String background;
+
     @Override
     protected void onCreate() {
         super.onCreate();
         if (this.role == null) {
             this.role = Role.USER;
+        }
+        if (this.skinId == null) {
+            this.skinId = "01";
         }
     }
 

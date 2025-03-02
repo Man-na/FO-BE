@@ -4,6 +4,7 @@ import com.manna.fobe.common.dto.ResponseMessage;
 import com.manna.fobe.user.dto.LoginRequestDto;
 import com.manna.fobe.user.dto.SignupRequestDto;
 import com.manna.fobe.user.dto.Tokens;
+import com.manna.fobe.user.dto.UpdateUserRequestDto;
 import com.manna.fobe.user.entity.User;
 import com.manna.fobe.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -89,6 +90,23 @@ public class UserController {
                 .data(user)
                 .statusCode(200)
                 .resultMessage("User profile retrieved")
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 프로필 수정
+    @PatchMapping("/me")
+    public ResponseEntity<ResponseMessage> editProfile(
+            @RequestAttribute("userId") int userId,
+            @RequestBody UpdateUserRequestDto updateRequestDto
+    ) {
+        User updatedUser = userService.updateProfile(userId, updateRequestDto);
+
+        ResponseMessage response = ResponseMessage.builder()
+                .data(updatedUser)
+                .statusCode(200)
+                .resultMessage("Profile updated successfully")
                 .build();
 
         return ResponseEntity.ok(response);
