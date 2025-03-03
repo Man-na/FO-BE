@@ -26,6 +26,7 @@ public class FeedServiceImpl implements FeedService {
 
         Feed feed = Feed.builder()
                 .title(createFeedDto.getTitle())
+                .description(createFeedDto.getDescription())
                 .author(user)
                 .build();
 

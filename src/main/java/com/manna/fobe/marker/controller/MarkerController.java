@@ -6,8 +6,6 @@ import com.manna.fobe.marker.entity.Marker;
 import com.manna.fobe.marker.service.MarkerService;
 import com.manna.fobe.common.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +24,7 @@ public class MarkerController {
     private final S3Utils s3Utils;
 
     // marker 추가
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<ResponseMessage> createMarker(@RequestBody CreateMarkerDto createMarkerDto, @RequestAttribute("userId") int userId) {
         Marker createdMarker = markerService.createMarker(createMarkerDto, userId);
 
@@ -41,31 +39,12 @@ public class MarkerController {
 
     // 마커 전체 조회
     @GetMapping("/markers/all")
-    public ResponseEntity<ResponseMessage> getMyMarkers(
-            @RequestAttribute("userId") int userId
+    public ResponseEntity<ResponseMessage> getMarkers(
     ) {
-        List<Marker> markers = markerService.getMyMarkers(userId);
+        List<Marker> markers = markerService.getMarkers();
 
         ResponseMessage responseMessage = ResponseMessage.builder()
                 .data(markers)
-                .statusCode(200)
-                .resultMessage("마커 조회 성공")
-                .build();
-
-        return ResponseEntity.ok(responseMessage);
-    }
-
-    // 내 마커 조회
-    @GetMapping("/markers/my")
-    public ResponseEntity<ResponseMessage> getMarkers(
-            @RequestAttribute("userId") int userId,
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size
-    ) {
-        Page<Marker> postsPage = markerService.getMyMarkers(userId, PageRequest.of(page - 1, size));
-
-        ResponseMessage responseMessage = ResponseMessage.builder()
-                .data(postsPage)
                 .statusCode(200)
                 .resultMessage("마커 조회 성공")
                 .build();

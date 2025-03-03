@@ -17,9 +17,9 @@ public class FeedController {
 
     private final FeedService feedService;
 
-    
+
     // 피드 추가
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<ResponseMessage> createUser(@RequestBody CreateFeedDto createFeedDto, @RequestAttribute("userId") int userId) {
         Feed createdFeed = feedService.createFeed(createFeedDto, userId);
 
@@ -44,7 +44,7 @@ public class FeedController {
         ResponseMessage responseMessage = ResponseMessage.builder()
                 .data(feedsPage)
                 .statusCode(200)
-                .resultMessage("마커 조회 성공")
+                .resultMessage("피드 조회 성공")
                 .build();
 
         return ResponseEntity.ok(responseMessage);
@@ -58,12 +58,13 @@ public class FeedController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
+        System.out.println("userId = " + userId);
         Page<Feed> postsPage = feedService.getMyFeeds(userId, PageRequest.of(page - 1, size));
 
         ResponseMessage responseMessage = ResponseMessage.builder()
                 .data(postsPage)
                 .statusCode(200)
-                .resultMessage("마커 조회 성공")
+                .resultMessage("피드 조회 성공")
                 .build();
 
         return ResponseEntity.ok(responseMessage);
@@ -79,7 +80,7 @@ public class FeedController {
         ResponseMessage responseMessage = ResponseMessage.builder()
                 .data(feed)
                 .statusCode(200)
-                .resultMessage("포스트 조회 성공")
+                .resultMessage("피드 조회 성공")
                 .build();
 
         return ResponseEntity.ok(responseMessage);

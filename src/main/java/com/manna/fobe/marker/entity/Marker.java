@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "posts")
+@Table(name = "markers")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,7 +20,7 @@ import java.util.List;
 public class Marker extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String title;
     private String address;
 
@@ -40,5 +40,5 @@ public class Marker extends CommonEntity {
 
     @OneToMany(mappedBy = "marker", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Image> images;
+    private List<MarkerImage> images;
 }

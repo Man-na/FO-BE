@@ -1,7 +1,7 @@
 package com.manna.fobe.marker.service;
 
 import com.manna.fobe.marker.dto.CreateMarkerDto;
-import com.manna.fobe.marker.entity.Image;
+import com.manna.fobe.marker.entity.MarkerImage;
 import com.manna.fobe.marker.entity.Marker;
 import com.manna.fobe.marker.repository.MarkerRepository;
 import com.manna.fobe.user.entity.User;
@@ -44,28 +44,23 @@ public class MarkerServiceImpl implements MarkerService {
                 .build();
 
         if (createMarkerDto.getImageUris() != null) {
-            List<Image> images = createMarkerDto.getImageUris().stream()
-                    .map(img -> new Image(null, img.getUri(), marker))
+            List<MarkerImage> markerImages = createMarkerDto.getImageUris().stream()
+                    .map(img -> new MarkerImage(null, img.getUri(), marker))
                     .collect(Collectors.toList());
-            marker.setImages(images);
+            marker.setImages(markerImages);
         }
 
         return markerRepository.save(marker);
     }
 
     @Override
-    public List<Marker> getMyMarkers(int userId) {
-        return markerRepository.findByUserId(userId);
+    public List<Marker> getMarkers() {
+        return markerRepository.findAll();
     }
 
     @Override
     public Marker getSingleMarker(int markerId) {
         return markerRepository.findById(markerId);
-    }
-
-    @Override
-    public Page<Marker> getMyMarkers(int userId, Pageable pageable) {
-        return markerRepository.findByUserId(userId, pageable);
     }
 
     @Override

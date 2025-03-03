@@ -11,11 +11,9 @@ import java.util.Map;
 public interface MarkerService {
     Marker createMarker(CreateMarkerDto createMarkerDto, int userId);
 
-    List<Marker> getMyMarkers(int userId);
+    List<Marker> getMarkers();
 
     Marker getSingleMarker(int markerId);
-
-    Page<Marker> getMyMarkers(int userId, Pageable pageable);
 
     Map<Integer, List<Marker>> getCalendarMarkers(int year, int month, int userId);
 }
