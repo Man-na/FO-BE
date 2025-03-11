@@ -10,6 +10,10 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:test}
     password: ${SPRING_DATASOURCE_PASSWORD:test}
 
+  data:
+    mongodb:
+      uri: ${MONGO_CHAT_DATA_URL:mongodb://localhost:27017/chatdb}
+
   jpa:
     hibernate:
       ddl-auto: update

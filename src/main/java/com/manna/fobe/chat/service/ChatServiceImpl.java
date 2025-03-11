@@ -2,8 +2,10 @@ package com.manna.fobe.chat.service;
 
 import com.manna.fobe.chat.dto.CreateChatRoomDto;
 import com.manna.fobe.chat.dto.JoinChatRoomDto;
+import com.manna.fobe.chat.entity.ChatMessage;
 import com.manna.fobe.chat.entity.ChatRoom;
 import com.manna.fobe.chat.entity.ChatRoomUser;
+import com.manna.fobe.chat.repository.ChatMessageRepository;
 import com.manna.fobe.chat.repository.ChatRoomRepository;
 import com.manna.fobe.chat.repository.ChatRoomUserRepository;
 import com.manna.fobe.user.entity.User;
@@ -14,12 +16,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomUserRepository chatRoomUserRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -33,7 +38,15 @@ public class ChatServiceImpl implements ChatService {
                 .creator(user)
                 .build();
 
-        return chatRoomRepository.save(chatRoom);
+        chatRoomRepository.save(chatRoom);
+
+        ChatRoomUser chatRoomUser = ChatRoomUser.builder()
+                .chatRoom(chatRoom)
+                .user(user)
+                .build();
+        chatRoomUserRepository.save(chatRoomUser);
+
+        return chatRoom;
     }
 
     @Override
@@ -57,5 +70,9 @@ public class ChatServiceImpl implements ChatService {
                 .build();
 
         chatRoomUserRepository.save(chatRoomUser);
+    }
+
+    public List<ChatMessage> getChatMessagesByRoomId(int chatRoomId) {
+        return chatMessageRepository.findByChatRoomId(chatRoomId);
     }
 }

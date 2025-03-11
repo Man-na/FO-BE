@@ -2,6 +2,7 @@ package com.manna.fobe.chat.controller;
 
 import com.manna.fobe.chat.dto.CreateChatRoomDto;
 import com.manna.fobe.chat.dto.JoinChatRoomDto;
+import com.manna.fobe.chat.entity.ChatMessage;
 import com.manna.fobe.chat.entity.ChatRoom;
 import com.manna.fobe.chat.service.ChatService;
 import com.manna.fobe.common.dto.ResponseMessage;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/chat")
@@ -61,5 +64,12 @@ public class ChatController {
                 .build();
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/chat-rooms/{chatRoomId}/messages")
+    public ResponseEntity<List<ChatMessage>> getChatMessages(
+            @PathVariable("chatRoomId") int chatRoomId) {
+        List<ChatMessage> messages = chatService.getChatMessagesByRoomId(chatRoomId);
+        return ResponseEntity.ok(messages);
     }
 }
