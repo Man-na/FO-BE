@@ -12,11 +12,11 @@ import com.manna.fobe.user.entity.User;
 import com.manna.fobe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -72,7 +72,13 @@ public class ChatServiceImpl implements ChatService {
         chatRoomUserRepository.save(chatRoomUser);
     }
 
-    public List<ChatMessage> getChatMessagesByRoomId(int chatRoomId) {
-        return chatMessageRepository.findByChatRoomId(chatRoomId);
+    public Page<ChatMessage> getChatMessagesByRoomId(Pageable pageable, int chatRoomId) {
+        Sort sort = Sort.by("timestamp").descending();
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sort
+        );
+        return chatMessageRepository.findByChatRoomId(sortedPageable, chatRoomId);
     }
 }

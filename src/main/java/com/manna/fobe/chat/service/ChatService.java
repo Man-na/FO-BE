@@ -7,8 +7,6 @@ import com.manna.fobe.chat.entity.ChatRoom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 public interface ChatService {
     ChatRoom createChatRoom(CreateChatRoomDto createChatRoomDto, int userId);
 
@@ -16,5 +14,5 @@ public interface ChatService {
 
     void joinChatRoom(JoinChatRoomDto joinChatRoomDto, int userId);
 
-    List<ChatMessage> getChatMessagesByRoomId(int chatRoomId);
+    Page<ChatMessage> getChatMessagesByRoomId(Pageable pageable, int chatRoomId);
 }

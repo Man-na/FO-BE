@@ -12,7 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/chat")
@@ -66,10 +68,19 @@ public class ChatController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/chat-rooms/{chatRoomId}/messages")
-    public ResponseEntity<List<ChatMessage>> getChatMessages(
+    @GetMapping("/{chatRoomId}/messages")
+    public ResponseEntity<ResponseMessage> getChatMessages(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size,
             @PathVariable("chatRoomId") int chatRoomId) {
-        List<ChatMessage> messages = chatService.getChatMessagesByRoomId(chatRoomId);
-        return ResponseEntity.ok(messages);
+        Page<ChatMessage> chatMessages = chatService.getChatMessagesByRoomId(PageRequest.of(page - 1, size), chatRoomId);
+
+        ResponseMessage response = ResponseMessage.builder()
+                .data(chatMessages)
+                .statusCode(200)
+                .resultMessage("채팅 목록 조회 성공")
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }
