@@ -26,7 +26,6 @@ public class User extends CommonEntity {
     private String nickname;
 
     private String imageUri;
-
     private String hatId;
     private String handId;
     private String skinId;

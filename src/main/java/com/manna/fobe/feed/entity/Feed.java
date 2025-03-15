@@ -9,8 +9,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "feeds")
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
