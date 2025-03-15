@@ -1,6 +1,8 @@
 package com.manna.fobe.matching.controller;
 
 import com.manna.fobe.common.dto.ResponseMessage;
+import com.manna.fobe.matching.dto.CreateCustomMatchingDto;
+import com.manna.fobe.matching.dto.CreateCustomMatchingResponseDto;
 import com.manna.fobe.matching.dto.CreateRapidMatchingDto;
 import com.manna.fobe.matching.dto.CreateRapidMatchingResponseDto;
 import com.manna.fobe.matching.entity.RapidMatching;
@@ -19,7 +21,7 @@ public class MatchingController {
     private final MatchingService matchingService;
 
     @PostMapping("/rapid-matching")
-    public ResponseEntity<ResponseMessage> createUser(
+    public ResponseEntity<ResponseMessage> createRapidMatching(
             @RequestBody CreateRapidMatchingDto createRapidMatchingDto,
             @RequestAttribute("userId") int userId) {
         CreateRapidMatchingResponseDto createdRapidMatching = matchingService.createRapidMatching(createRapidMatchingDto, userId);
@@ -27,7 +29,22 @@ public class MatchingController {
         ResponseMessage response = ResponseMessage.builder()
                 .data(createdRapidMatching)
                 .statusCode(201)
-                .resultMessage("빠른 매칭 성공")
+                .resultMessage("빠른 매칭 생성 성공")
+                .build();
+
+        return ResponseEntity.status(201).body(response);
+    }
+
+    @PostMapping("/custom-matching")
+    public ResponseEntity<ResponseMessage> createCustomMatching(
+            @RequestBody CreateCustomMatchingDto createcustomMatchingDto,
+            @RequestAttribute("userId") int userId) {
+        CreateCustomMatchingResponseDto createdCustomMatching = matchingService.createCustomMatching(createcustomMatchingDto, userId);
+
+        ResponseMessage response = ResponseMessage.builder()
+                .data(createdCustomMatching)
+                .statusCode(201)
+                .resultMessage("직접 매칭 생성 성공")
                 .build();
 
         return ResponseEntity.status(201).body(response);
