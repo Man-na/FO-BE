@@ -28,14 +28,15 @@ public class FeedServiceImpl implements FeedService {
                 .title(createFeedDto.getTitle())
                 .description(createFeedDto.getDescription())
                 .author(user)
+                .categoryId(createFeedDto.getCategoryId())
                 .build();
 
         return feedRepository.save(feed);
     }
 
     @Override
-    public Page<Feed> getFeeds(Pageable pageable) {
-        return feedRepository.findAll(pageable);
+    public Page<Feed> getFeeds(Pageable pageable, int categoryId) {
+        return feedRepository.findByCategoryId(pageable, categoryId);
     }
 
     @Override

@@ -33,13 +33,14 @@ public class FeedController {
     }
 
 
-    // 피드 전체 조회
+    // 카테고리별 피드 조회
     @GetMapping("/feeds")
-    public ResponseEntity<ResponseMessage> getMyFeeds(
+    public ResponseEntity<ResponseMessage> getFeeds(
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "categoryId", defaultValue = "1") int categoryId
     ) {
-        Page<Feed> feedsPage = feedService.getFeeds(PageRequest.of(page - 1, size));
+        Page<Feed> feedsPage = feedService.getFeeds(PageRequest.of(page - 1, size), categoryId);
 
         ResponseMessage responseMessage = ResponseMessage.builder()
                 .data(feedsPage)

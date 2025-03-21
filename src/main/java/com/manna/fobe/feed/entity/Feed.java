@@ -23,6 +23,8 @@ public class Feed extends CommonEntity {
 
     private String description;
 
+    private int categoryId;
+
     @Column(name = "user_id", insertable = false, updatable = false)
     private int userId;
 

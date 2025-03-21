@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface FeedRepository extends JpaRepository<Feed, Integer> {
     Page<Feed> findAll(Pageable pageable);
 
+    Page<Feed> findByCategoryId(Pageable pageable, int categoryId);
+
     Page<Feed> findByUserId(int userId, Pageable pageable);
 
     Optional<Feed> findById(Integer feedId);

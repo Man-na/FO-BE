@@ -11,7 +11,7 @@ import java.util.Map;
 public interface FeedService {
     Feed createFeed(CreateFeedDto createFeedDto, int userId);
 
-    Page<Feed> getFeeds(Pageable pageable);
+    Page<Feed> getFeeds(Pageable pageable, int categoryId);
 
     Feed getSingleFeed(int feedId);
 
