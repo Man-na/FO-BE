@@ -1,5 +1,6 @@
 package com.manna.fobe.common.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -16,8 +17,13 @@ import java.time.temporal.ChronoUnit;
 @MappedSuperclass
 public class CommonEntity {
 
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @Column(name = "dlt_ysno", nullable = false)
     private String dltYsno;
 
     @PrePersist

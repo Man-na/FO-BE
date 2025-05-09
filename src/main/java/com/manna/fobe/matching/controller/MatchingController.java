@@ -37,9 +37,9 @@ public class MatchingController {
 
     @PostMapping("/custom-matching")
     public ResponseEntity<ResponseMessage> createCustomMatching(
-            @RequestBody CreateCustomMatchingDto createcustomMatchingDto,
+            @RequestBody CreateCustomMatchingDto createCustomMatchingDto,
             @RequestAttribute("userId") int userId) {
-        CreateCustomMatchingResponseDto createdCustomMatching = matchingService.createCustomMatching(createcustomMatchingDto, userId);
+        CreateCustomMatchingResponseDto createdCustomMatching = matchingService.createCustomMatching(createCustomMatchingDto, userId);
 
         ResponseMessage response = ResponseMessage.builder()
                 .data(createdCustomMatching)

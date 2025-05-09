@@ -15,6 +15,6 @@ public class CreateCustomMatchingResponseDto {
     private int userId;
     private String meetingDate;
     private String location;
-    private String agePreference;
+    private CustomMatching.AgePreference agePreference;
     private CustomMatching.MatchingStatus status;
 }

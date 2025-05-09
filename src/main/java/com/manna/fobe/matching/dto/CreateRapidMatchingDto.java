@@ -1,6 +1,7 @@
 package com.manna.fobe.matching.dto;
 
 import com.manna.fobe.common.entity.CommonEntity;
+import com.manna.fobe.matching.entity.RapidMatching;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,6 @@ public class CreateRapidMatchingDto extends CommonEntity {
     private String priority2Day;
 
     @NotNull
-    private String agePreference;
+    private RapidMatching.AgePreference agePreference;
 
 }

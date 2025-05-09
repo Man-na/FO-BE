@@ -20,6 +20,11 @@ public class User extends CommonEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    private String birth;
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
@@ -47,5 +52,9 @@ public class User extends CommonEntity {
 
     public enum Role {
         USER, ADMIN
+    }
+
+    public enum Gender {
+        MALE, FEMALE
     }
 }

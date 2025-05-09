@@ -15,6 +15,6 @@ public class CreateRapidMatchingResponseDto {
     private int userId;
     private String priority1Day;
     private String priority2Day;
-    private String agePreference;
+    private RapidMatching.AgePreference agePreference;
     private RapidMatching.MatchingStatus status;
 }

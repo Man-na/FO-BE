@@ -59,7 +59,6 @@ public class FeedController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
-        System.out.println("userId = " + userId);
         Page<Feed> postsPage = feedService.getMyFeeds(userId, PageRequest.of(page - 1, size));
 
         ResponseMessage responseMessage = ResponseMessage.builder()

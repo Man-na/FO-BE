@@ -26,12 +26,18 @@ public class RapidMatching extends CommonEntity {
 
     private String priority2Day;
 
-    private String agePreference;
+    @Column(name = "age_preference")
+    @Enumerated(EnumType.STRING)
+    private AgePreference agePreference = AgePreference.NONE;
 
     @Enumerated(EnumType.STRING)
     private MatchingStatus status = MatchingStatus.PENDING;
 
     public enum MatchingStatus {
         PENDING, MATCHED, CANCELED
+    }
+
+    public enum AgePreference {
+        NONE, PEER, HIGHER
     }
 }

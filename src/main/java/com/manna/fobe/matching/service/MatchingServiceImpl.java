@@ -59,7 +59,6 @@ public class MatchingServiceImpl implements MatchingService {
     public CreateCustomMatchingResponseDto createCustomMatching(CreateCustomMatchingDto createCustomMatchingDto, int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
         CustomMatching customMatching = CustomMatching.builder()
                 .user(user)
                 .meetingDate(createCustomMatchingDto.getMeetingDate())

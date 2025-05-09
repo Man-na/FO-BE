@@ -19,19 +19,22 @@ public class CustomMatching extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "matching_id", nullable = false)
     private int matchingId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "meeting_date", nullable = false)
     private String meetingDate;
 
     @Column(nullable = false)
     private String location;
 
-    private String agePreference;
+    @Column(name = "age_preference")
+    @Enumerated(EnumType.STRING)
+    private AgePreference agePreference = AgePreference.NONE;
 
     @Enumerated(EnumType.STRING)
     private MatchingStatus status = MatchingStatus.PENDING;
@@ -41,5 +44,9 @@ public class CustomMatching extends CommonEntity {
 
     public enum MatchingStatus {
         PENDING, MATCHED, CANCELED
+    }
+
+    public enum AgePreference {
+        NONE, PEER, HIGHER
     }
 }
