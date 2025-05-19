@@ -11,11 +11,16 @@ import com.manna.fobe.user.entity.User;
 import com.manna.fobe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import static com.manna.fobe.common.utils.JwtUtil.REFRESH_TOKEN_EXPIRE_TIME;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final AvatarService avatarService;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public User signup(SignupRequestDto createUserRequestDto) {
@@ -71,6 +77,9 @@ public class UserServiceImpl implements UserService {
 
             String accessToken = jwtUtil.createToken(user.get().getId(), user.get().getRole().toString());
             String refreshToken = jwtUtil.createRefreshToken(user.get().getId(), user.get().getRole().toString());
+
+            String key = "refreshToken:" + user.get().getId();
+            redisTemplate.opsForValue().set(key, refreshToken, REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.SECONDS);
 
             return new Tokens(accessToken, refreshToken);
         } catch (DataAccessException e) {
