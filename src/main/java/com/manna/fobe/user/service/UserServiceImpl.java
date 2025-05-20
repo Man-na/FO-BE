@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static com.manna.fobe.common.utils.JwtUtil.BEARER_PREFIX;
 import static com.manna.fobe.common.utils.JwtUtil.REFRESH_TOKEN_EXPIRE_TIME;
 
 @Service
@@ -169,6 +170,37 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             log.error("프로필 수정 중 예기치 않은 오류 발생", e);
             throw new BizRuntimeException("프로필 수정 중 예기치 않은 오류가 발생했습니다.", e);
+        }
+    }
+
+    @Override
+    public Tokens refresh(String accessToken, String refreshToken) {
+        try {
+            int userId = jwtUtil.getUserIdFromTokenWithoutValidation(accessToken);
+            String role = jwtUtil.getRoleFromTokenWithoutValidation(accessToken);
+
+            String storedRefreshToken = (String) redisTemplate.opsForValue().get("refreshToken:" + userId);
+
+            if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken.substring(BEARER_PREFIX.length()))) {
+                throw new BizRuntimeException("유효하지 않은 리프레시 토큰입니다.");
+            }
+
+            if (!jwtUtil.validateToken(refreshToken)) {
+                throw new BizRuntimeException("유효하지 않은 리프레시 토큰입니다.");
+            }
+
+            String newAccessToken = jwtUtil.createToken(userId, role);
+            String newRefreshToken = jwtUtil.createRefreshToken(userId, role);
+
+            redisTemplate.opsForValue().set("refreshToken:" + userId, newRefreshToken, REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.SECONDS);
+
+            return new Tokens(newAccessToken, newRefreshToken);
+        } catch (BizRuntimeException e) {
+            log.error("토큰 재발급 중 비즈니스 로직 오류 발생", e);
+            throw e;
+        } catch (Exception e) {
+            log.error("토큰 재발급 중 예기치 않은 오류 발생", e);
+            throw new BizRuntimeException("토큰 재발급 중 예기치 않은 오류가 발생했습니다.", e);
         }
     }
 
