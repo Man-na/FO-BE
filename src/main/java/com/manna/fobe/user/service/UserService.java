@@ -16,4 +16,6 @@ public interface UserService {
     User getMyProfile(int userId);
 
     User updateProfile(int userId, UpdateUserRequestDto updateUserRequestDto);
+
+    Tokens refresh(String accessToken, String refreshToken);
 }
