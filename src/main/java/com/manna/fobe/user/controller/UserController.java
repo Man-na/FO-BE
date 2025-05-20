@@ -1,10 +1,7 @@
 package com.manna.fobe.user.controller;
 
 import com.manna.fobe.common.dto.ResponseMessage;
-import com.manna.fobe.user.dto.LoginRequestDto;
-import com.manna.fobe.user.dto.SignupRequestDto;
-import com.manna.fobe.user.dto.Tokens;
-import com.manna.fobe.user.dto.UpdateUserRequestDto;
+import com.manna.fobe.user.dto.*;
 import com.manna.fobe.user.entity.User;
 import com.manna.fobe.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -110,5 +107,20 @@ public class UserController {
                 .build();
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ResponseMessage> refreshToken(
+            @RequestBody RefreshRequestDto refreshRequestDto
+    ) {
+        Tokens tokens = userService.refresh(refreshRequestDto.getAccessToken(), refreshRequestDto.getRefreshToken());
+        
+        ResponseMessage responseMessage = ResponseMessage.builder()
+                .data(tokens)
+                .statusCode(200)
+                .resultMessage("Token refreshed")
+                .build();
+
+        return ResponseEntity.ok(responseMessage);
     }
 }

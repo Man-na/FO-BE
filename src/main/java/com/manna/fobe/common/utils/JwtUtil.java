@@ -61,12 +61,12 @@ public class JwtUtil {
         claims.put("userId", userId);
 
         return Jwts.builder()
-                        .setSubject(String.valueOf(userId))
-                        .setClaims(claims)
-                        .setIssuedAt(now)
-                        .setExpiration(expiration)
-                        .signWith(key, signatureAlgorithm)
-                        .compact();
+                .setSubject(String.valueOf(userId))
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expiration)
+                .signWith(key, signatureAlgorithm)
+                .compact();
     }
 
     /**
@@ -137,5 +137,45 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public int getUserIdFromTokenWithoutValidation(String token) {
+        if (token.startsWith(BEARER_PREFIX)) {
+            token = token.substring(BEARER_PREFIX.length());
+        }
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(key)
+                    .parseClaimsJws(token)
+                    .getBody();
+            Object userId = claims.get("userId");
+            return Integer.parseInt(userId.toString());
+        } catch (ExpiredJwtException e) {
+            Claims claims = e.getClaims();
+            log.debug("Expired Claims: {}", claims);
+            return Integer.parseInt(claims.get("userId").toString());
+        } catch (Exception e) {
+            log.error("토큰 파싱 실패: {}", token, e);
+            throw new BizRuntimeException("토큰 파싱에 실패했습니다.", e);
+        }
+    }
+
+    public String getRoleFromTokenWithoutValidation(String token) {
+        if (token.startsWith(BEARER_PREFIX)) {
+            token = token.substring(BEARER_PREFIX.length());
+        }
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(key)
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.get("role", String.class);
+        } catch (ExpiredJwtException e) {
+            Claims claims = e.getClaims();
+            return claims.get("role", String.class);
+        } catch (Exception e) {
+            log.error("토큰 파싱 실패: {}", token, e);
+            throw new BizRuntimeException("토큰 파싱에 실패했습니다.", e);
+        }
     }
 }
